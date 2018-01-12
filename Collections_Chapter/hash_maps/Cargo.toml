@@ -1,0 +1,6 @@
+[package]
+name = "hash_maps"
+version = "0.1.0"
+authors = ["rcarson3 <rac428@cornell.edu>"]
+
+[dependencies]
