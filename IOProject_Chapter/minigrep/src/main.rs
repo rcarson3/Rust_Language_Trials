@@ -15,17 +15,19 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     //The code after unwrap_or_else is a closure
     let config = Config::new(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {}", err);
+        eprintln!("Problem parsing arguments: {}", err);
         process::exit(1);
     });
 
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.filename);
+    println!("\nSearching for: {}\n", config.query);
+    println!("In file: {}\n", config.filename);
 
     //Moved all of the logic into a run function
     //We know let the user know if there was an error in the main application
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {}", e);
+        //The macro eprintln prints to the stderr instead of
+        //stdout
+        eprintln!("Application error: {}", e);
         process::exit(1);
     }
 }
