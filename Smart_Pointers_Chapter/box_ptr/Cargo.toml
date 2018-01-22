@@ -1,0 +1,6 @@
+[package]
+name = "box_ptr"
+version = "0.1.0"
+authors = ["robert <rac428@cornell.edu>"]
+
+[dependencies]

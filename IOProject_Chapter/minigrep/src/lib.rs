@@ -10,13 +10,20 @@ pub struct Config {
 }
 
 impl Config{
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        //The first value in args is the relative path of the binary being used 
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-        let query = args[1].clone();
-        let filename = args[2].clone();
+    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+        args.next();
+        //By replacing what was before a vector of stings with an itertor
+        //we can now iterate through the env args. This also let's us
+        //provide more specific error messages than last time.
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file name"),
+        };
         //This is how we can check an environmental variable in
         //rust
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
@@ -31,16 +38,22 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     //&str has a lines method that breaks the contents
     //of a string up by the lines and lets us iterate over 
     //those
-    for line in contents.lines(){
-        //&str also has a method that allows us to check
-        //if the string contains another string
-        if line.contains(query){
-            //If it does contain the string we
-            //push it that line to our results
-            results.push(line);
-        }
-    }
-    results
+    // for line in contents.lines(){
+    //     //&str also has a method that allows us to check
+    //     //if the string contains another string
+    //     if line.contains(query){
+    //         //If it does contain the string we
+    //         //push it that line to our results
+    //         results.push(line);
+    //     }
+    // }
+    // results
+//We can replace all of the above by using an iterator and the filter
+//method.
+    contents.lines()
+        .filter(|line| line.contains(query))
+        .collect()
+
 }
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {

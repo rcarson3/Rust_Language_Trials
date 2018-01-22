@@ -12,12 +12,12 @@ fn main() {
     //values.
     //The collect function can create several different collections.
     //Therefore, you need to make sure you annotate the type your expecting.
-    let args: Vec<String> = env::args().collect();
-    //The code after unwrap_or_else is a closure
-    let config = Config::new(&args).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
+    //We've updated this such that Config::new takes ownership of an
+    //iterator. Then inside new we can avoid the clone call. 
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
+            eprintln!("Problem parsing arguments: {}", err);
+            process::exit(1);
+        });
 
     println!("\nSearching for: {}\n", config.query);
     println!("In file: {}\n", config.filename);
